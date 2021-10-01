@@ -1,0 +1,38 @@
+# This workflow runs every five minutes to check for a new manifest
+name: Check for new manifest
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/5 * * * *'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: github
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.4
+
+      - name: Install Node
+        uses: actions/setup-node@v2.1.2
+        with:
+          node-version: '14.x'
+
+      - name: npm install
+        uses: bahmutov/npm-install@v1.1.0
+
+      - name: Pick new game
+        run: npm start
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          ROLE_ID: ${{ secrets.ROLE_ID }}
+
+      - name: Commit old picks
+        if: steps.data.outputs.porcelain
+        uses: stefanzweifel/git-auto-commit-action@v4.7.2
+        with:
+          commit_message: update old picks
+          commit_user_name: Old Picks
+          commit_user_email: fried.chris+oldpicks@gmail.com
+          commit_author: Old Picks <fried.chris+oldpicks@gmail.com>
