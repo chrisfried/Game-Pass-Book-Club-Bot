@@ -4,17 +4,16 @@ const axios = require("axios");
 require('dotenv').config();
 
 fs.readFile("previous-picks.json", (err, content) => {
-  if (err) return console.log("Error loading client secret file:", err);
-  let picks = JSON.parse(content)
-  // Authorize a client with credentials, then call the Google Sheets API.
-  pickGame(picks)
+  if (err) return console.log("Error loading previous picks file:", err);
+  let oldPicks = JSON.parse(content)
+  pickGame(oldPicks)
 });
 
 function pickGame(oldPicks) {
   const sheets = google.sheets({ version: "v4", auth: process.env.GOOGLE_API_KEY });
   sheets.spreadsheets.values.get(
     {
-      spreadsheetId: "1kspw-4paT-eE5-mrCrc4R9tg70lH2ZTFrJOUmOtOytg",
+      spreadsheetId: "1kspw-4paT-eE5-mrCrc4R9tg70lH2ZTFrJOUmOtOytg", // maintained by r/XboxGamePass
       range: "Master List!A3:D",
     },
     (err, res) => {
