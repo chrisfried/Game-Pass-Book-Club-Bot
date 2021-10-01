@@ -8,25 +8,32 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x, 16.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
     environment: Château Deluxe
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v2
 
-      - name: Install Node
-        uses: actions/setup-node@v2.1.2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
         with:
-          node-version: '14.x'
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
 
-      - name: npm install
-        uses: bahmutov/npm-install@v1.1.0
+      - run: npm ci
+
+      - name: create env file
+        run: |
+          touch .env
+          echo GOOGLE_API_KEY =${{ secrets.GOOGLE_API_KEY }} >> .env
+          echo DISCORD_WEBHOOK =${{ secrets.DISCORD_WEBHOOK }} >> .env
+          echo ROLE_ID =${{ secrets.ROLE_ID }} >> .env
 
       - name: Pick new game
         run: npm start
-        env:
-          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-          ROLE_ID: ${{ secrets.ROLE_ID }}
 
       - name: Commit old picks
         if: steps.data.outputs.porcelain
