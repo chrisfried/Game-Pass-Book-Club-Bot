@@ -62,20 +62,19 @@ function pickGame(oldPicks) {
         
         console.log(oldPicks)
         console.log(payload);
-        fs.writeFile("previous-picks.json", JSON.stringify(oldPicks), (err) => {})
 
-        // axios
-        //   .post(process.env.DISCORD_WEBHOOK, {
-        //     content: payload
-        //   })
-        //   .then((res) => {
-        //     console.log(`statusCode: ${res.status}`);
-        //     console.log(res);
-        //     fs.writeFile("previous-picks.json", JSON.stringify(oldPicks), (err) => {})
-        //   })
-        //   .catch((error) => {
-        //     console.error(error);
-        //   });
+        axios
+          .post(process.env.DISCORD_WEBHOOK, {
+            content: payload
+          })
+          .then((res) => {
+            console.log(`statusCode: ${res.status}`);
+            console.log(res);
+            fs.writeFile("previous-picks.json", JSON.stringify(oldPicks), (err) => {})
+          })
+          .catch((error) => {
+            console.error(error);
+          });
       } else {
         console.log("No data found.");
       }
