@@ -1,5 +1,5 @@
 # This workflow runs every five minutes to check for a new manifest
-name: Check for new manifest
+name: Pick new Game of the Week
 on:
   workflow_dispatch:
   schedule:
@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    environment: github
+    environment: Château Deluxe
     steps:
       - name: Checkout
         uses: actions/checkout@v2.3.4
