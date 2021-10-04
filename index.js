@@ -56,7 +56,7 @@ function pickGame(oldPicks) {
         if (touchControls.indexOf(pick) > -1) {
           platforms.push("xCloud - Touch Controls")
         }
-        let payload = `<@${process.env.ROLE_ID}> Game of the Week\n**${pick}** (${platforms.join(' | ')})`
+        let payload = `<@&893208194929807370> Game of the Week\n**${pick}** (${platforms.join(' | ')})`
         oldPicks.push(pick);
         
         console.log(oldPicks)
