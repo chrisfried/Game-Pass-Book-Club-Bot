@@ -91,6 +91,7 @@ function pickGame(oldPicks) {
         axios
           .post(process.env.DISCORD_WEBHOOK, {
             content: payload,
+            thread_name: pick
           })
           .then((res) => {
             console.log(`statusCode: ${res.status}`);
