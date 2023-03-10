@@ -1,9 +1,9 @@
-# This workflow runs every five minutes to check for a new manifest
-name: Pick new Game of the Week
+# This workflow runs once a week to pick a new game of the week
+name: Pick new Game Catalog Game of the Week
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 15 * * 0'
+    - cron: '0 16 * * 3'
 
 jobs:
   build:
@@ -11,6 +11,8 @@ jobs:
     environment: deluxe
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: ps-game-catalog
 
       - name: Use Node.js 14.x
         uses: actions/setup-node@v2
@@ -24,8 +26,8 @@ jobs:
         run: |
           touch .env
           echo "GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}" >> .env
-          echo "DISCORD_WEBHOOK=${{ secrets.DISCORD_WEBHOOK }}" >> .env
-          echo "ROLE_ID ${{ secrets.ROLE_ID }}" >> .env
+          echo "PS_DISCORD_ROLE=${{ secrets.PS_DISCORD_ROLE }}" >> .env
+          echo "PS_DISCORD_WEBHOOK=${{ secrets.PS_DISCORD_WEBHOOK }}" >> .env
           cat .env
 
       - name: Pick new game

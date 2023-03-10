@@ -1,0 +1,40 @@
+# This workflow runs once a week to pick a new game of the week
+name: Pick new Game Pass Game of the Week
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 16 * * 0'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: deluxe
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14.x
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: create env file
+        run: |
+          touch .env
+          echo "GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}" >> .env
+          echo "XBOX_DISCORD_ROLE=${{ secrets.XBOX_DISCORD_ROLE }}" >> .env
+          echo "XBOX_DISCORD_WEBHOOK=${{ secrets.XBOX_DISCORD_WEBHOOK }}" >> .env
+          cat .env
+
+      - name: Pick new game
+        run: npm start
+
+      - name: Commit old picks
+        uses: stefanzweifel/git-auto-commit-action@v4.7.2
+        with:
+          commit_message: update old picks
+          commit_user_name: Old Picks
+          commit_user_email: fried.chris+oldpicks@gmail.com
+          commit_author: Old Picks <fried.chris+oldpicks@gmail.com>
