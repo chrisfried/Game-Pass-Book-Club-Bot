@@ -83,7 +83,7 @@ function pickGame(oldPicks) {
         if (ps5.has(pick)) {
           platforms.push("PS5");
         }
-        let payload = `<@&1083592195476574248> Game of the Week\n**${pick}** (${platforms.join(
+        let payload = `<@&${process.env.PS_DISCORD_ROLE}> Game of the Week\n**${pick}** (${platforms.join(
           " | "
         )})`;
         oldPicks.push(pick);
