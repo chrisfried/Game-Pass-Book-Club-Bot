@@ -81,7 +81,7 @@ function pickGame(oldPicks) {
         if (touchControls.has(pick)) {
           platforms.push("xCloud - Touch Controls");
         }
-        let payload = `<@&893208194929807370> Game of the Week\n**${pick}** (${platforms.join(
+        let payload = `<@&${process.env.XBOX_DISCORD_ROLE}> Game of the Week\n**${pick}** (${platforms.join(
           " | "
         )})`;
         oldPicks.push(pick);
@@ -89,7 +89,7 @@ function pickGame(oldPicks) {
         console.log(payload);
 
         axios
-          .post(process.env.DISCORD_WEBHOOK, {
+          .post(process.env.XBOX_DISCORD_WEBHOOK, {
             content: payload,
             thread_name: pick
           })
