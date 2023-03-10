@@ -50,7 +50,8 @@ function pickGame(oldPicks) {
           if (
             (status === "Active" || status === "Leaving Soon") &&
             oldPicks.indexOf(game) === -1 && 
-            (tier.indexOf("Essential") === 0 || tier.indexOf("Extra") === 0)
+            (tier.indexOf("Essential") === 0 || tier.indexOf("Extra") === 0) &&
+            (system === "PS4" || system === "PS5" || system === "PS5/PS4")
           ) {
             for (let i = 0; i < entries; i++) {
               available.push(game);
@@ -77,11 +78,11 @@ function pickGame(oldPicks) {
         if (extra.has(pick)) {
           platforms.push("Extra");
         }
-        if (ps4.has(pick)) {
-          platforms.push("PS4");
-        }
         if (ps5.has(pick)) {
           platforms.push("PS5");
+        }
+        if (ps4.has(pick)) {
+          platforms.push("PS4");
         }
         let payload = `<@&${process.env.PS_DISCORD_ROLE}> Game of the Week\n**${pick}** (${platforms.join(
           " | "
