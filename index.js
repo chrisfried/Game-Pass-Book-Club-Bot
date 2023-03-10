@@ -16,7 +16,7 @@ function pickGame(oldPicks) {
   });
   sheets.spreadsheets.values.get(
     {
-      spreadsheetId: "1kspw-4paT-eE5-mrCrc4R9tg70lH2ZTFrJOUmOtOytg", // maintained by r/XboxGamePass
+      spreadsheetId: "19RorxFhWc2lHocg4c9zrVssSwZq1u2nPcpTsAvzdJQw", // maintained by r/XboxGamePass
       range: "Master List!A3:J",
     },
     (err, res) => {
@@ -24,14 +24,15 @@ function pickGame(oldPicks) {
       const rows = res.data.values;
       if (rows.length) {
         let available = [];
-        let xbox = new Set();
-        let pc = new Set();
-        let xCloud = new Set();
-        let touchControls = new Set();
+        let ps4 = new Set();
+        let ps5 = new Set();
+        let essential = new Set();
+        let extra = new Set();
+        let premium = new Set();
         rows.map((row) => {
           const game = row[0];
           const system = row[1];
-          const cloud = row[2];
+          const tier = row[2];
           const status = row[3];
           const months = row[6];
           const metacritic = row[9];
@@ -48,40 +49,41 @@ function pickGame(oldPicks) {
           }
           if (
             (status === "Active" || status === "Leaving Soon") &&
-            oldPicks.indexOf(game) === -1
+            oldPicks.indexOf(game) === -1 && 
+            (tier.indexOf("Essential") === 0 || tier.indexOf("Extra") === 0)
           ) {
             for (let i = 0; i < entries; i++) {
               available.push(game);
             }
-            if (system === "Xbox" || system === "Xbox / PC") {
-              xbox.add(game);
+            if (system === "PS4" || system === "PS5/PS4") {
+              ps4.add(game);
             }
-            if (system === "PC" || system === "Xbox / PC") {
-              pc.add(game);
+            if (system === "PS5" || system === "PS5/PS4") {
+              ps5.add(game);
             }
-            if (cloud === "Yes") {
-              xCloud.add(game);
-            }
-            if (cloud === "Touch Controls") {
-              touchControls.add(game);
+            if (tier.indexOf("Essential") === 0) {
+              essential.add(game)
+            }  
+            if (tier.indexOf("Extra") === 0) {
+              extra.add(game)
             }
           }
         });
         const pick = available[Math.floor(Math.random() * available.length)];
         const platforms = [];
-        if (xbox.has(pick)) {
-          platforms.push("Xbox");
+        if (essential.has(pick)) {
+          platforms.push("Essential");
         }
-        if (pc.has(pick)) {
-          platforms.push("PC");
+        if (extra.has(pick)) {
+          platforms.push("Extra");
         }
-        if (xCloud.has(pick)) {
-          platforms.push("xCloud");
+        if (ps4.has(pick)) {
+          platforms.push("PS4");
         }
-        if (touchControls.has(pick)) {
-          platforms.push("xCloud - Touch Controls");
+        if (ps5.has(pick)) {
+          platforms.push("PS5");
         }
-        let payload = `<@&893208194929807370> Game of the Week\n**${pick}** (${platforms.join(
+        let payload = `<@&1083592195476574248> Game of the Week\n**${pick}** (${platforms.join(
           " | "
         )})`;
         oldPicks.push(pick);
@@ -89,7 +91,7 @@ function pickGame(oldPicks) {
         console.log(payload);
 
         axios
-          .post(process.env.DISCORD_WEBHOOK, {
+          .post(process.env.PS_DISCORD_WEBHOOK, {
             content: payload,
             thread_name: pick
           })
